@@ -1,4 +1,4 @@
-package services;
+package com.citydata.services;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
