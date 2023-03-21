@@ -14,4 +14,5 @@ public class CurrentWeather {
     private String temp_max;
     private String humidity;
     private String description;
+    private String text;
 }
