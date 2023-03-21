@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
-public class CityDataService {
+public class CityWeatherService {
     private static final String API_KEY = "";
     public CurrentWeather getCurrentWeather(String city, String countryCode){
         String response = getCurrentWeatherDataResponse(city, countryCode, API_KEY);
