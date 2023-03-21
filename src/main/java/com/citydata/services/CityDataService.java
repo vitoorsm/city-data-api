@@ -21,6 +21,11 @@ import java.util.regex.Pattern;
 @Service
 @AllArgsConstructor
 public class CityDataService {
+    private static final String API_KEY = "";
+    public CurrentWeather getCurrentWeather(String city, String countryCode){
+        String response = getCurrentWeatherDataResponse(city, countryCode, API_KEY);
+        return formatResponseToCurrentWeatherClass(response);
+    }
     private String getCurrentWeatherDataResponse(String city, String countryCode, String API_KEY) {
         try {
             URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + countryCode + "&appid=" + API_KEY + "&units=metric");
