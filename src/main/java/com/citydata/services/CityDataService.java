@@ -16,12 +16,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
-public class CityWeatherService {
+public class CityDataService {
     private static final String OPEN_WEATHER_MAP_API_KEY = "";
     private static final String OPEN_AI_API_KEY = "";
     public CityData getCurrentWeather(String city, String countryCode){
@@ -35,7 +33,7 @@ public class CityWeatherService {
             conn.connect();
 
             if(conn.getResponseCode() != 200){
-                throw new RuntimeException("Couldn't connect to API");
+                throw new RuntimeException("Couldn't connect to OpenWeatherMap API");
             }
             StringBuilder response = new StringBuilder();
             Scanner scanner = new Scanner(url.openStream());
@@ -57,14 +55,8 @@ public class CityWeatherService {
             JSONObject sysData = (JSONObject) dataObj.get("sys");
             JSONArray weatherData = (JSONArray) dataObj.get("weather");
 
-            Pattern pattern = Pattern.compile("description");
-            Matcher matcher = pattern.matcher(weatherData.toString());
-            String weatherDescription = "";
-
-            while (matcher.find()){
-                String cutString = weatherData.toString().substring(matcher.end()+3, 60);
-                weatherDescription = cutString.substring(0, cutString.indexOf(",")-1);
-            }
+            String weatherDescription = String.valueOf(weatherData);
+            weatherDescription = weatherDescription.substring(weatherDescription.indexOf("description")+14, weatherDescription.indexOf("main")-3);
 
             Gson gson = new GsonBuilder().create();
             CityData cityData = gson.fromJson(String.valueOf(mainData), CityData.class);
@@ -75,7 +67,7 @@ public class CityWeatherService {
 
         }
         catch (ParseException e){
-            e.printStackTrace();
+            System.out.println("Error while parsing");
         }
         return null;
     }
