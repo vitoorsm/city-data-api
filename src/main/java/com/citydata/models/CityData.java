@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CurrentWeather {
+public class CityData {
     private String city;
     private String country;
     private String temp;
