@@ -79,14 +79,14 @@ public class CityDataService {
                     .temperature(0.7)
                     .maxTokens(800)
                     .build();
-            String response = String.valueOf((service.createCompletion(request)).getChoices());
-            String responseCut = response.substring(response.indexOf("text=")+5, response.indexOf(", index")).trim();
+            String fullResponse = String.valueOf((service.createCompletion(request)).getChoices());
+            String cleanResponse = fullResponse.substring(fullResponse.indexOf("text=")+5, fullResponse.indexOf(", index")).trim();
             Pattern pattern = Pattern.compile("\\n");
-            Matcher matcher = pattern.matcher(responseCut);
+            Matcher matcher = pattern.matcher(cleanResponse);
             while (matcher.find()){
-                responseCut = responseCut.replace(matcher.group()," ");
+                cleanResponse = cleanResponse.replace(matcher.group()," ");
             }
-            return responseCut;
+            return cleanResponse;
         }catch (Exception e){
             e.printStackTrace();
             throw new BadRequestException("Couldn't connect to OpenAI API, please try again");
