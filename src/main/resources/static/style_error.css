@@ -1,0 +1,14 @@
+.box{
+height: 500px;
+width: 100%;
+position: relative;
+padding-top: 250px;
+}
+.box_child{
+background:#f9f9f9;
+width: 500px;
+border: 1px solid white;
+padding: 30px;
+border-radius: 18px;
+margin: 0 auto;
+}
