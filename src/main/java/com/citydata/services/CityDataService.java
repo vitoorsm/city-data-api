@@ -22,11 +22,12 @@ import java.util.regex.Pattern;
 public class CityDataService {
     public static final String OPEN_WEATHER_MAP_API_KEY = "";
     public static final String OPEN_AI_API_KEY = "";
+
     public CityData getCurrentWeather(String city, String countryCode) throws Exception {
         String response = getCurrentWeatherDataResponse(city, countryCode);
         return formatResponseToCurrentWeatherClass(response);
     }
-    private String getCurrentWeatherDataResponse(String city, String countryCode) throws Exception {
+    private String getCurrentWeatherDataResponse(String city, String countryCode) throws Exception{
         URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + countryCode + "&appid=" + OPEN_WEATHER_MAP_API_KEY + "&units=metric");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
@@ -38,7 +39,7 @@ public class CityDataService {
         scanner.close();
         return response.toString();
     }
-    private CityData formatResponseToCurrentWeatherClass(String response) throws Exception {
+    private CityData formatResponseToCurrentWeatherClass(String response) throws Exception{
         JSONParser parse = new JSONParser();
         JSONObject dataObj = (JSONObject) parse.parse(response);
         JSONObject mainData = (JSONObject) dataObj.get("main");
@@ -54,7 +55,7 @@ public class CityDataService {
         cityData.setCountry(gson.fromJson(String.valueOf(sysData.get("country")), String.class));
         cityData.setDescription(StringUtils.capitalize(weatherDescription));
         return cityData;
-        }
+    }
 
     public String getCityTextFromGPT(String message){
         OpenAiService service = new OpenAiService(OPEN_AI_API_KEY);
@@ -69,7 +70,8 @@ public class CityDataService {
         Pattern pattern = Pattern.compile("\\n");
         Matcher matcher = pattern.matcher(cleanResponse);
         while (matcher.find()){
-            cleanResponse = cleanResponse.replace(matcher.group()," ");}
+            cleanResponse = cleanResponse.replace(matcher.group()," ");
+        }
         return cleanResponse;
     }
 }
