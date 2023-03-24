@@ -1,6 +1,5 @@
 package com.citydata.services;
 
-import com.citydata.exception.BadRequestException;
 import com.citydata.models.CityData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,8 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
@@ -23,73 +20,56 @@ import java.util.regex.Pattern;
 @Service
 @AllArgsConstructor
 public class CityDataService {
-    private static final String OPEN_WEATHER_MAP_API_KEY = "033f7ce0c6c033a9d9281bec0785a275";
-    private static final String OPEN_AI_API_KEY = "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";
-    public CityData getCurrentWeather(String city, String countryCode){
+    public static final String OPEN_WEATHER_MAP_API_KEY = "";
+    public static final String OPEN_AI_API_KEY = "";
+    public CityData getCurrentWeather(String city, String countryCode) throws Exception {
         String response = getCurrentWeatherDataResponse(city, countryCode);
         return formatResponseToCurrentWeatherClass(response);
     }
-    private String getCurrentWeatherDataResponse(String city, String countryCode) {
-        try {
-            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + countryCode + "&appid=" + OPEN_WEATHER_MAP_API_KEY + "&units=metric");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.connect();
-            StringBuilder response = new StringBuilder();
-            Scanner scanner = new Scanner(url.openStream());
-            while (scanner.hasNext()){
-                response.append(scanner.nextLine());
-            }
-            scanner.close();
-            return response.toString();
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new BadRequestException("There was an error with OpenWeatherMap API");
+    private String getCurrentWeatherDataResponse(String city, String countryCode) throws Exception {
+        URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + countryCode + "&appid=" + OPEN_WEATHER_MAP_API_KEY + "&units=metric");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.connect();
+        StringBuilder response = new StringBuilder();
+        Scanner scanner = new Scanner(url.openStream());
+        while (scanner.hasNext()){
+            response.append(scanner.nextLine());
         }
+        scanner.close();
+        return response.toString();
     }
-    private CityData formatResponseToCurrentWeatherClass(String response) {
-        try {
-            JSONParser parse = new JSONParser();
-            JSONObject dataObj = (JSONObject) parse.parse(response);
-            JSONObject mainData = (JSONObject) dataObj.get("main");
-            JSONObject sysData = (JSONObject) dataObj.get("sys");
-            JSONArray weatherData = (JSONArray) dataObj.get("weather");
+    private CityData formatResponseToCurrentWeatherClass(String response) throws Exception {
+        JSONParser parse = new JSONParser();
+        JSONObject dataObj = (JSONObject) parse.parse(response);
+        JSONObject mainData = (JSONObject) dataObj.get("main");
+        JSONObject sysData = (JSONObject) dataObj.get("sys");
+        JSONArray weatherData = (JSONArray) dataObj.get("weather");
 
-            String weatherDescription = String.valueOf(weatherData);
-            weatherDescription = weatherDescription.substring(weatherDescription.indexOf("description")+14, weatherDescription.indexOf("main")-3);
+        String weatherDescription = String.valueOf(weatherData);
+        weatherDescription = weatherDescription.substring(weatherDescription.indexOf("description")+14, weatherDescription.indexOf("main")-3);
 
-            Gson gson = new GsonBuilder().create();
-            CityData cityData = gson.fromJson(String.valueOf(mainData), CityData.class);
-            cityData.setCity((String) dataObj.get("name"));
-            cityData.setCountry(gson.fromJson(String.valueOf(sysData.get("country")), String.class));
-            cityData.setDescription(StringUtils.capitalize(weatherDescription));
-            return cityData;
-
+        Gson gson = new GsonBuilder().create();
+        CityData cityData = gson.fromJson(String.valueOf(mainData), CityData.class);
+        cityData.setCity((String) dataObj.get("name"));
+        cityData.setCountry(gson.fromJson(String.valueOf(sysData.get("country")), String.class));
+        cityData.setDescription(StringUtils.capitalize(weatherDescription));
+        return cityData;
         }
-        catch (Exception e){
-            throw new BadRequestException("Error while parsing");
-        }
-    }
 
     public String getCityTextFromGPT(String message){
-        try {
-            OpenAiService service = new OpenAiService(OPEN_AI_API_KEY);
-            CompletionRequest request = CompletionRequest.builder()
-                    .model("text-davinci-003")
-                    .prompt(message)
-                    .temperature(0.7)
-                    .maxTokens(800)
-                    .build();
-            String fullResponse = String.valueOf((service.createCompletion(request)).getChoices());
-            String cleanResponse = fullResponse.substring(fullResponse.indexOf("text=")+5, fullResponse.indexOf(", index")).trim();
-            Pattern pattern = Pattern.compile("\\n");
-            Matcher matcher = pattern.matcher(cleanResponse);
-            while (matcher.find()){
-                cleanResponse = cleanResponse.replace(matcher.group()," ");
-            }
-            return cleanResponse;
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new BadRequestException("Couldn't connect to OpenAI API, please try again");
-        }
+        OpenAiService service = new OpenAiService(OPEN_AI_API_KEY);
+        CompletionRequest request = CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt(message)
+                .temperature(0.7)
+                .maxTokens(800)
+                .build();
+        String fullResponse = String.valueOf((service.createCompletion(request)).getChoices());
+        String cleanResponse = fullResponse.substring(fullResponse.indexOf("text=")+5, fullResponse.indexOf(", index")).trim();
+        Pattern pattern = Pattern.compile("\\n");
+        Matcher matcher = pattern.matcher(cleanResponse);
+        while (matcher.find()){
+            cleanResponse = cleanResponse.replace(matcher.group()," ");}
+        return cleanResponse;
     }
 }
