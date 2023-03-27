@@ -1,6 +1,6 @@
-<h1> City Data - REST API </h1>
+<h1> City Data App </h1>
 
-This API was built to display the current weather and a brief description of a city.
+This app was built to display the current weather and a brief description of a city.
 
 ## Technology stack
 * Spring Boot
@@ -29,9 +29,9 @@ This API was built to display the current weather and a brief description of a c
 
 The application will run on port 8090.
 
-## Explore Rest API
+## Explore the App
 
-* Once the API is started, the default page will look like this.
+* Once the App is started, the default page will look like this.
 
 ![default_page](https://user-images.githubusercontent.com/111457616/227644895-4de5c3ca-9dd7-44fc-8c98-67447273bb00.png)
 
