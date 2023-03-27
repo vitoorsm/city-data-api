@@ -1,4 +1,4 @@
-<h1> City Data </h1>
+<h1> City Data Application</h1>
 
 This web application was built to display the current weather and a brief description of a city.
 
