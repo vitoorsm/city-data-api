@@ -1,6 +1,6 @@
 <h1> City Data </h1>
 
-This application was built to display the current weather and a brief description of a city.
+This web application was built to display the current weather and a brief description of a city.
 
 ## Technology stack
 * Spring Boot
