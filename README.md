@@ -15,7 +15,7 @@ This web application was built to display the current weather and a brief descri
 
 #### 1. Clone the repository
 
-> git clone https://github.com/vitoorsm/city-data-api
+> git clone https://github.com/vitoorsm/city-data-app
 
 #### 2. Set API keys
 
