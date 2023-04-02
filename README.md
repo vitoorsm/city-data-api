@@ -21,7 +21,7 @@ This web application was built to display the current weather and a brief descri
 
 > src/main/java/com/citydata/services/CityDataService.java\
 > OPEN_WEATHER_MAP_API_KEY = "YOUR KEY"\
-> OPEN_AI_API_KEY = "YOUR KEY"\
+> OPEN_AI_API_KEY = "YOUR KEY"
 
 #### 3. Run the application
 
